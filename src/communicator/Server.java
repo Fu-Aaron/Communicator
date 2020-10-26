@@ -6,17 +6,28 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.Vector;
 
 /**
  * @source https://www.geeksforgeeks.org/introducing-threads-socket-programming-java/
  */
 public class Server {
     private ServerSocket ss;
+    /**
+     * Vectors are apparently thread safe, recommended to use vectors for comms.
+     * After much research, static public variables are the best way to have this be accessible.
+     * No modifier means package private
+     * @source https://www.geeksforgeeks.org/multi-threaded-chat-application-set-1/
+     */
+    static Vector<ClientHandler> clientList;
+
     public Server (int port) throws IOException {
         ss = new ServerSocket(port);
+        clientList = new Vector<>();
     }
 
     public void run(Scanner in) throws IOException {
+        int i = 0;
         while(true) {
             Socket s = null;
             try {
@@ -27,8 +38,11 @@ public class Server {
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
                 System.out.println("Creating new thread");
-                Thread t = new ClientHandler(s, dis, dos);
+                ClientHandler t = new ClientHandler(s, dis, dos, "Client" + i);
+                clientList.add(t);
+                System.out.println(t.getClientName() + " has been created.");
                 t.start();
+                i++;
             } catch (Exception e) {
                 s.close();
                 e.printStackTrace();
