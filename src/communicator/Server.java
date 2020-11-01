@@ -26,7 +26,7 @@ public class Server {
         clientList = new Vector<>();
     }
 
-    public void run(Scanner in) throws IOException {
+    public void run() throws IOException {
         int i = 0;
         while(true) {
             Socket s = null;
@@ -61,7 +61,7 @@ public class Server {
         System.out.println("Thank you!");
         try {
             Server s = new Server(port);
-            s.run(scn);
+            s.run();
         } catch (IOException e) {
             e.printStackTrace();
         }

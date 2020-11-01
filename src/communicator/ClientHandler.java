@@ -44,7 +44,9 @@ public class ClientHandler extends Thread {
             clientOut.writeUTF("No other clients connected...");
         } else {
             for (ClientHandler ch : Server.clientList) {
-                ch.clientOut.writeUTF(getClientName() + " writes: " + received);
+                if (!ch.equals(this)) {
+                    ch.clientOut.writeUTF(getClientName() + " writes: " + received);
+                }
             }
         }
     }

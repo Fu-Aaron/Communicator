@@ -17,19 +17,71 @@ public class Client {
     private Socket s;
     private DataInputStream dis;
     private DataOutputStream dos;
+    private Scanner scn;
+    private Thread sender;
+    private Thread receiver;
 
-    public Client(String address, int port) throws IOException {
+    public Client(String address, int port, Scanner scn) throws IOException {
         s = new Socket(address, port);
         dis = new DataInputStream(s.getInputStream());
         dos = new DataOutputStream(s.getOutputStream());
+        this.scn = scn;
+        sender = new Thread(new sendMessage());
+        receiver = new Thread(new receiveMessage());
     }
 
-    public void send(String in) throws IOException {
-        dos.writeUTF(in);
+    private class sendMessage implements Runnable {
+        /**
+         * When an object implementing interface {@code Runnable} is used
+         * to create a thread, starting the thread causes the object's
+         * {@code run} method to be called in that separately executing
+         * thread.
+         * <p>
+         * The general contract of the method {@code run} is that it may
+         * take any action whatsoever.
+         *
+         * @see Thread#run()
+         */
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    String in = scn.nextLine();
+                    dos.writeUTF(in);
+                    if (in.equals("terminate"))  {
+                        terminate();
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-    public void receive() throws IOException {
-        System.out.println(dis.readUTF());
+    private class receiveMessage implements Runnable {
+        /**
+         * When an object implementing interface {@code Runnable} is used
+         * to create a thread, starting the thread causes the object's
+         * {@code run} method to be called in that separately executing
+         * thread.
+         * <p>
+         * The general contract of the method {@code run} is that it may
+         * take any action whatsoever.
+         *
+         * @see Thread#run()
+         */
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    String out = dis.readUTF();
+                    System.out.println(out);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void terminate() throws IOException {
@@ -37,19 +89,9 @@ public class Client {
         dos.close();
     }
 
-    public void run(Scanner in) throws IOException {
-        String input;
-        while(true) {
-            receive();
-            input = in.nextLine();
-            send(input);
-            if (input.equals("terminate")) {
-                terminate();
-                in.close();
-                System.out.println("Client has been terminated.");
-                break;
-            }
-        }
+    public void run() {
+       sender.start();
+       receiver.start();
     }
 
     public static void main(String[] args) {
@@ -66,8 +108,8 @@ public class Client {
 
         System.out.println("Thank you!");
         try {
-            Client c = new Client(address, port);
-            c.run(scn);
+            Client c = new Client(address, port, scn);
+            c.run();
         } catch (IOException e) {
             e.printStackTrace();
         }
