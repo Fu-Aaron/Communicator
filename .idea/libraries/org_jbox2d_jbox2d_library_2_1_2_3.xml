@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="org.jbox2d:jbox2d-library:2.1.2.3" type="repository">
+    <properties maven-id="org.jbox2d:jbox2d-library:2.1.2.3" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.m2/repository/org/jbox2d/jbox2d-library/2.1.2.3/jbox2d-library-2.1.2.3.jar!/" />
+      <root url="jar://$USER_HOME$/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
