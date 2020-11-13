@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LaunchDyn4j {
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 1600;
     private static final int HEIGHT = 800;
     public static void main(String[] args) {
 
